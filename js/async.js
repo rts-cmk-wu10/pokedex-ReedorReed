@@ -10,10 +10,10 @@ async function getPokemonsAsy(offset, limit) {
 	const result = await fetch(url);
 	const data = await result.json();
 	getPokemons(data);
-	console.log(data);
+	//console.log(data);
 
 	const { currentPage, totalPages } = getPageNumber(offset, limit, data.count);
-	console.log(currentPage, totalPages);
+	//console.log(currentPage, totalPages);
 }
 
 function getPageNumber(offset, limit, numberOfPokemons) {
@@ -36,7 +36,7 @@ function getPokemons(data) {
 				.then((result) => result.json())
 				.then((data) => {
 					displayPokemon(data);
-					console.log(data);
+					//console.log(data);
 				});
 		})
 		.join('');
@@ -44,16 +44,32 @@ function getPokemons(data) {
 
 function displayPokemon(data) {
 	const types = data.types;
+	const typeCardText = types
+		.map((type) => `<span>${type.type.name}</span>`)
+		.join('');
 	const imgSrc = data.sprites.other['official-artwork']['front_default'];
 	const spritesTemplates = /*html */ `
-    <figure class="card">
-        <img src="${imgSrc}" class="pokemon__img">
-        <figcaption>
-        <div class="poke-number">${data.id}</div>
-        <h2 class="poke-title">${data.name}</h2>
-        <div class="poke-type">${types[0].type.name}</div>
-        </figcaption>
-    </figure>
+    <div class="pokedexGraphic">
+        <figure class="card">
+            <img src="${imgSrc}" class="pokemon__img" id="clickModal">
+            <figcaption>
+            <div class="poke-number">#${data.id}</div>
+            <h2 class="poke-title">${data.name}</h2>
+            <div class="poke-type">${typeCardText}</div>
+            </figcaption>
+        </figure>
+<!--
+        <div class="modal" id="myModal">
+            <div class="modalContent">
+                <span class="close">&times;</span>
+                <img src="${imgSrc}" class="pokemon__img">
+                    <div class="poke-number">#${data.id}</div>
+                    <h2 class="poke-title">${data.name}</h2>
+                    <div class="poke-type">${typeCardText}</div>
+                    <div>${data.stats}</div>
+            </div>
+        </div> -->
+    </div>
     `;
 	wrapper.insertAdjacentHTML('beforeend', spritesTemplates);
 }
@@ -64,9 +80,9 @@ function nextPrev(data) {
 	wrapperNextPrevDom.innerHTML = '';
 
 	const nextPrevTemplate = /*html */ `
-    <ul>
-    ${next ? /*html */ `<li><a href="${next}">Next</a></li>` : `<li>Next</li>`}
-    ${prev ? /*html */ `<li><a href="${prev}">Prev</a></li>` : `<li>Prev</li>`}
+    <ul class="linkUl">
+    ${prev ? /*html */ `<li><a href="${prev}">-</a></li>` : `<li>-</li>`}
+    ${next ? /*html */ `<li><a href="${next}">+</a></li>` : `<li>+</li>`}
     </ul>
     `;
 
@@ -82,15 +98,36 @@ function handleClick(e) {
 
 	if (!e.target.href) return;
 
-	console.log(e.target.href);
+	//console.log(e.target.href);
 	const newUrl = new URL(e.target.href);
 	const params = new URLSearchParams(newUrl.search);
 	const limit = params.get('limit');
-	console.log(limit);
+	//console.log(limit);
 	const offset = params.get('offset');
-	console.log(offset);
+	//console.log(offset);
 
 	getPokemonsAsy(offset, limit);
 }
 
-getPokemonsAsy(0,9);
+getPokemonsAsy(0, 9);
+
+document.addEventListener('DOMContentLoaded', () => {
+	//Modal
+	const modal = document.getElementById('myModal');
+	const modalBtn = document.getElementById('clickModal');
+	const closeModal = document.querySelector('.close');
+
+	modalBtn.addEventListener('click', () => {
+		modal.style.display = 'block';
+	});
+
+	closeModal.addEventListener('click', () => {
+		modal.style.display = 'none';
+	});
+
+	window.addEventListener('click', (e) => {
+		if (e.target == modal) {
+			modal.style.display = 'none';
+		}
+	});
+});
