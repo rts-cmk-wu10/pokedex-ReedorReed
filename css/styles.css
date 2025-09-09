@@ -11,9 +11,9 @@ body {
 .pokemon__img {
 	inline-size: 200px;
 	object-fit: cover;
-	/* background-color: rgb(122, 177, 116); */
     position: relative;
     top: -5rem;
+    cursor: pointer;
 }
 
 .pokedexGraphic {
@@ -117,7 +117,7 @@ a {
 	margin: auto;
 	padding: 20px;
 	border: 1px solid #888;
-	width: 80%;
+	width: 40%;
 }
 
 /* The Close Button */

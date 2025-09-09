@@ -29,17 +29,15 @@ function getPokemons(data) {
 	nextPrev(data); //This needs to be here or it will get the wrong data
 	handleNextPrevLink();
 
-	data.results
-		.map((element) => {
-			const url = element.url;
-			fetch(url)
-				.then((result) => result.json())
-				.then((data) => {
-					displayPokemon(data);
-					//console.log(data);
-				});
-		})
-		.join('');
+	data.results.forEach((element) => {
+		const url = element.url;
+
+		fetch(url)
+			.then((result) => result.json())
+			.then((data) => {
+				displayPokemon(data);
+			});
+	});
 }
 
 function displayPokemon(data) {
@@ -48,27 +46,39 @@ function displayPokemon(data) {
 		.map((type) => `<span>${type.type.name}</span>`)
 		.join('');
 	const imgSrc = data.sprites.other['official-artwork']['front_default'];
+
+	const pokemonId = data.id;
+
 	const spritesTemplates = /*html */ `
     <div class="pokedexGraphic">
         <figure class="card">
-            <img src="${imgSrc}" class="pokemon__img" id="clickModal">
+            <img src="${imgSrc}" class="pokemon__img clickModal" data-pokemon-id="${pokemonId}">
             <figcaption>
             <div class="poke-number">#${data.id}</div>
             <h2 class="poke-title">${data.name}</h2>
             <div class="poke-type">${typeCardText}</div>
             </figcaption>
         </figure>
-<!--
-        <div class="modal" id="myModal">
+
+        <div class="modal" id="myModal-${pokemonId}">
             <div class="modalContent">
-                <span class="close">&times;</span>
+                <span class="close" data-pokemon-id="${pokemonId}">&times;</span>
                 <img src="${imgSrc}" class="pokemon__img">
                     <div class="poke-number">#${data.id}</div>
                     <h2 class="poke-title">${data.name}</h2>
                     <div class="poke-type">${typeCardText}</div>
-                    <div>${data.stats}</div>
+                    <div class="stats">${
+											data.stats && data.stats.length > 0
+												? data.stats
+														.map(
+															(stat) =>
+																`<div>${stat.stat.name}: ${stat.base_stat}`
+														)
+														.join('')
+												: 'No stats available'
+										}</div>
             </div>
-        </div> -->
+        </div> 
     </div>
     `;
 	wrapper.insertAdjacentHTML('beforeend', spritesTemplates);
@@ -102,32 +112,33 @@ function handleClick(e) {
 	const newUrl = new URL(e.target.href);
 	const params = new URLSearchParams(newUrl.search);
 	const limit = params.get('limit');
-	//console.log(limit);
 	const offset = params.get('offset');
-	//console.log(offset);
 
 	getPokemonsAsy(offset, limit);
 }
 
-getPokemonsAsy(0, 9);
+document.addEventListener('click', (e) => {
+	if (e.target.classList.contains('clickModal')) {
+		const pokemonId = e.target.dataset.pokemonId;
+		const modal = document.getElementById(`myModal-${pokemonId}`);
 
-document.addEventListener('DOMContentLoaded', () => {
-	//Modal
-	const modal = document.getElementById('myModal');
-	const modalBtn = document.getElementById('clickModal');
-	const closeModal = document.querySelector('.close');
+		if (modal) {
+			modal.style.display = 'block';
+		}
+	}
 
-	modalBtn.addEventListener('click', () => {
-		modal.style.display = 'block';
-	});
+	if (e.target.classList.contains('close')) {
+		const pokemonId = e.target.dataset.pokemonId;
+		const modal = document.getElementById(`myModal-${pokemonId}`);
 
-	closeModal.addEventListener('click', () => {
-		modal.style.display = 'none';
-	});
-
-	window.addEventListener('click', (e) => {
-		if (e.target == modal) {
+		if (modal) {
 			modal.style.display = 'none';
 		}
-	});
+	}
+
+	if (e.target.classList.contains('modal')) {
+		e.target.style.display = 'none';
+	}
 });
+
+getPokemonsAsy(0, 9);
