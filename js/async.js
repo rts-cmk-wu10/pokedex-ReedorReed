@@ -1,6 +1,10 @@
 const baseUrl = `https://pokeapi.co/api/v2/pokemon/`;
 const wrapper = document.querySelector('#wrapper');
 
+const contentWrapper = `<div id="contentWrapper"></div>`;
+wrapper.insertAdjacentHTML('afterbegin', contentWrapper);
+const container = document.querySelector('#contentWrapper');
+
 let limit = 20;
 let offset = 0;
 
@@ -62,6 +66,7 @@ function displayPokemon(data, index, pokemons) {
 		.join('');
 	const imgSrc = data.sprites['front_default'];
 	const gifSrc = data.sprites.other['showdown']['front_default'];
+	// const gifSrc = data.sprites.versions['generation-v']['black-white']['animated']['front_default']
 	const pokemonId = data.id;
 
 	const abilities = data.abilities;
@@ -72,7 +77,7 @@ function displayPokemon(data, index, pokemons) {
 	const spritesTemplates = /*html */ `
     <div class="pokedexGraphic">
         <figure class="card">
-            <img src="${imgSrc}" class="pokemon__img clickModal" data-pokemon-id="${pokemonId}">
+            <img src="${imgSrc}" class="pokemon__img clickModal" data-pokemon-id="${pokemonId}" loading="lazy">
             <figcaption>
             <div class="poke-number">#${data.id}</div>
             <h2 class="poke-title">${data.name}</h2>
@@ -115,7 +120,7 @@ function displayPokemon(data, index, pokemons) {
         </div> 
     </div>
     `;
-	wrapper.insertAdjacentHTML('beforeend', spritesTemplates);
+	container.insertAdjacentHTML('beforeend', spritesTemplates);
 
 	//Når sidste element i parti er indsat
 	if (pokemons.length - 1 === index) {
@@ -205,9 +210,9 @@ document.addEventListener('click', (e) => {
 	}
 });
 
-	const headerImage = `
+const headerImage = `
     <img src="https://fontmeme.com/permalink/250909/c98b56147580d8ad427647f4645af517.png" class="header-image">
     `;
-    wrapper.insertAdjacentHTML('beforeend', headerImage)
+container.insertAdjacentHTML('beforeend', headerImage);
 
 getPokemonsAsy(offset, limit);

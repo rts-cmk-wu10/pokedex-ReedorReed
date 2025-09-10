@@ -2,15 +2,39 @@ body {
 }
 
 #wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: rgb(145, 232, 145, 0.6);
+	background-image: linear-gradient(
+		-45deg,
+		rgba(145, 232, 145, 0.6),
+		rgba(145, 232, 145, 0.6) 50%,
+		rgba(81, 201, 68, 0.6) 50%,
+		rgba(121, 192, 111, 0.6)
+	);
+	background-size: 40px 40px;
+}
+
+#contentWrapper {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: 20px;
-	padding: 100px;
+	gap: 100px 20px;
+	padding: 40px;
+	background-color: #f0f0f0;
+	background-image: radial-gradient(#346abd 0.6px, transparent 0.6px),
+		radial-gradient(#346abd 0.6px, #f0f0f0 0.6px);
+	background-size: 36px 36px;
+	background-position: 0 0, 18px 18px;
+	width: 70%;
+	border-left: 5px ridge #ffcd00;
+	border-right: 5px ridge #346abd;
+	box-shadow: 4px 4px 12px #3e3e3e;
 }
 
 .header-image {
-    grid-column: 1/4;
-    margin: 0 auto 7rem auto;
+	grid-column: 1/4;
+	margin: 0 auto 2rem auto;
 }
 
 .pokemon__img {
@@ -23,6 +47,11 @@ body {
 
 .pokedexGraphic {
 	height: 450px;
+	box-shadow: 2px 2px 2px rgb(115, 115, 115) inset, 4px 4px 2px rgb(58, 58, 58);
+	border-radius: 15px;
+	height: 350px;
+	padding: 10px 20px 20px 20px;
+	background-color: #fff;
 }
 
 .card {
@@ -31,7 +60,16 @@ body {
 	align-items: center;
 	box-shadow: 2px 2px 4px rgb(115, 115, 115) inset, 5px 6px 3px rgb(58, 58, 58);
 	border-radius: 15px;
-	background-color: #7ab174;
+	background: radial-gradient(
+		ellipse at center,
+		#4b5f4b 0%,
+		#567e56 17%,
+		#71ad69 33%,
+		#7db577 67%,
+		#83c783 83%,
+		#b4ddb4 100%
+	);
+
 	height: 130px;
 }
 
@@ -130,7 +168,7 @@ a {
 	border-radius: 15px;
 	width: 40%;
 	font-family: monospace;
-	box-shadow: 3px 3px 3px red, 4px 4px 4px blue;
+	box-shadow: 3px 3px 3px #ffcd00, 6px 6px 2px #346abd;
 }
 
 .modalTextContent {
@@ -149,6 +187,14 @@ a {
 .modalContent .poke-type {
 	margin-bottom: 20px;
 }
+
+/* .modalContent .pokemon__img {
+    object-fit: cover;
+    height: 100%;
+    width: auto;
+    position: relative;
+    top: -45px;
+} */
 
 .stats {
 	display: flex;
