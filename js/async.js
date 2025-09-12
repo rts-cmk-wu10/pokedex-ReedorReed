@@ -8,9 +8,14 @@ const container = document.querySelector('#contentWrapper');
 let limit = 20;
 let offset = 0;
 
+
 // const nextPrevWrapper = /*html */ `<div id="next-prev-wrapper"></div>`;
 // wrapper.insertAdjacentHTML('beforebegin', nextPrevWrapper);
 // const wrapperNextPrevDom = document.querySelector('#next-prev-wrapper');
+
+//Back to top btn
+const backToTop = `<div><a href="#" class="to-top">&#x2191</a></div>`;
+wrapper.insertAdjacentHTML('beforebegin', backToTop);
 
 async function getPokemonsAsy(offset, limit) {
 	const url = `${baseUrl}?offset=${offset}&limit=${limit}`;
@@ -62,11 +67,10 @@ async function getPokemons(data) {
 function displayPokemon(data, index, pokemons) {
 	const types = data.types;
 	const typeCardText = types
-		.map((type) => `<span>${type.type.name}</span>`)
+		.map((type) => `<span class="typesColor">${type.type.name}</span>`)
 		.join('');
 	const imgSrc = data.sprites['front_default'];
-	const gifSrc = data.sprites.other['showdown']['front_default'];
-	// const gifSrc = data.sprites.versions['generation-v']['black-white']['animated']['front_default']
+	let gifSrc = data.sprites.other['showdown']['front_default'];
 	const pokemonId = data.id;
 
 	const abilities = data.abilities;
@@ -77,7 +81,7 @@ function displayPokemon(data, index, pokemons) {
 	const spritesTemplates = /*html */ `
     <div class="pokedexGraphic">
         <figure class="card">
-            <img src="${imgSrc}" class="pokemon__img clickModal" data-pokemon-id="${pokemonId}" loading="lazy">
+            <img src="${imgSrc}" class="pokemon__img clickModal" data-pokemon-id="${pokemonId}" loading="lazy" style>
             <figcaption>
             <div class="poke-number">#${data.id}</div>
             <h2 class="poke-title">${data.name}</h2>
@@ -133,7 +137,114 @@ function displayPokemon(data, index, pokemons) {
 		observer.disconnect();
 		observer.observe(nextObserveElement);
 	}
+    applyColorToType();
 }
+
+
+
+//Vibe coded fun
+// function displayPokemon(data, index, pokemons) {
+//     	const types = data.types;
+//     	const typeCardText = types
+//     		.map((type) => `<span class="typesColor">${type.type.name}</span>`)
+// 		.join('');
+// 	const imgSrc = data.sprites['front_default'];
+// 	let gifSrc = data.sprites.other['showdown']['front_default'];
+// 	const pokemonId = data.id;
+
+// 	const abilities = data.abilities;
+// 	const abiltyText = abilities
+// 		.map((abil) => `<p>${abil.ability.name}</p>`)
+// 		.join('');
+
+// 	const spritesTemplates = /*html */ `
+//     <div class="pokedexGraphic">
+//         <figure class="card">
+//             <img src="${imgSrc}" class="pokemon__img clickModal" data-pokemon-id="${pokemonId}" loading="lazy" style>
+//             <figcaption>
+//             <div class="poke-number">#${data.id}</div>
+//             <h2 class="poke-title">${data.name}</h2>
+//             <div class="poke-type">${typeCardText}</div>
+//             </figcaption>
+//         </figure>
+
+// <!--Modal content -->
+
+//         <div class="modal" id="myModal-${pokemonId}">
+//             <div class="modalContent">
+//                 <span class="close" data-pokemon-id="${pokemonId}">&times;</span>
+//                 <img src="${gifSrc}" class="pokemon__img">
+//                 <div class="modalTextContent">
+//                     <div class="poke-number">#${data.id}</div>
+//                     <h2 class="poke-title">${data.name}</h2>
+//                     <div class="poke-type">${typeCardText}</div>
+//                     <div class="stats">
+//                         <ul class="statsWH">
+//                             <li class="weight">Weight: ${data.weight} lbs</li>
+//                             <li class="height">Height: ${data.height}</li>
+//                             <li class="abilities">Abilities: ${abiltyText}</li>
+//                         </ul>
+//                     <ul class="statsUl">
+//                     ${
+// 											data.stats && data.stats.length > 0
+// 												? data.stats
+// 														.map(
+// 															(stat) =>
+// 																`<li class="statsLi">${stat.stat.name}: ${stat.base_stat}</li>`
+// 														)
+// 														.join('')
+// 												: 'No stats available'
+// 										}
+//                                         </ul>
+//                                         </div>
+//             </div>
+//             </div>
+
+//         </div> 
+//     </div>
+//     `;
+// 	container.insertAdjacentHTML('beforeend', spritesTemplates);
+
+// 	// Add hover effect to the specific Pokemon image that was just created
+// 	let gifSrc2 =
+// 		data.sprites.versions['generation-v']['black-white']['animated'][
+// 			'front_shiny'
+// 		];
+
+// 	// Get only the newly created images for this Pokemon
+// 	const newPokemonImages = container.querySelectorAll(
+// 		`[data-pokemon-id="${pokemonId}"]`
+// 	);
+
+// 	newPokemonImages.forEach((img) => {
+// 		// Only add event listener if it's an img element and has a valid animated sprite
+// 		if (img.tagName === 'IMG' && gifSrc2) {
+// 			const originalSrc = img.src;
+
+// 			img.addEventListener('mouseover', () => {
+// 				img.src = gifSrc2;
+// 			});
+
+// 			img.addEventListener('mouseout', () => {
+// 				img.src = originalSrc;
+// 			});
+// 		}
+// 	});
+
+// 	//Når sidste element i parti er indsat
+// 	if (pokemons.length - 1 === index) {
+// 		const figures = wrapper.querySelectorAll('figure');
+
+// 		//Find nyt næste element to observe
+// 		const nextObserveElement = figures[figures.length - 6];
+// 		nextObserveElement.classList.add('observer');
+// 		//Flyt observeren til det nye element
+// 		observer.disconnect();
+// 		observer.observe(nextObserveElement);
+// 	}
+// 	applyColorToType();
+// }
+
 
 //IntersectionObserver til infinity scroll
 const observer = new IntersectionObserver(
@@ -185,6 +296,10 @@ const observer = new IntersectionObserver(
 // 	getPokemonsAsy(offset, limit);
 // }
 
+//MouseOver function
+
+
+
 //Modal functionality
 document.addEventListener('click', (e) => {
 	if (e.target.classList.contains('clickModal')) {
@@ -216,3 +331,38 @@ const headerImage = `
 container.insertAdjacentHTML('beforeend', headerImage);
 
 getPokemonsAsy(offset, limit);
+
+//Change colors of types
+
+const colors = {
+	normal: '#A8A77A',
+	fire: '#EE8130',
+	water: '#6390F0',
+	electric: '#F7D02C',
+	grass: '#7AC74C',
+	ice: '#96D9D6',
+	fighting: '#C22E28',
+	poison: '#A33EA1',
+	ground: '#E2BF65',
+	flying: '#A98FF3',
+	psychic: '#F95587',
+	bug: '#A6B91A',
+	rock: '#B6A136',
+	ghost: '#735797',
+	dragon: '#6F35FC',
+	dark: '#705746',
+	steel: '#B7B7CE',
+	fairy: '#D685AD'
+};
+
+function applyColorToType() {
+	const pokeTypesColor = document.querySelectorAll('.typesColor');
+
+	pokeTypesColor.forEach((type) => {
+		const text = type.textContent.trim().toLowerCase();
+
+		if (colors[text]) {
+			type.style.backgroundColor = colors[text];
+		}
+	});
+}
